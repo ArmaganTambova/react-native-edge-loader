@@ -11,7 +11,9 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
+import com.facebook.react.module.annotations.ReactModule
 
+@ReactModule(name = EdgeLoaderModule.NAME)
 class EdgeLoaderModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
   override fun getName(): String {
