@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "react": "19.2.0",
-    "react-native": "0.83.0"
+    "react-native": "0.83.0",
+    "react-native-svg": "^15.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
