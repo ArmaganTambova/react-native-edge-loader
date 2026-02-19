@@ -1,21 +1,13 @@
-#import "EdgeLoader.h"
+#import <React/RCTBridgeModule.h>
 
-@implementation EdgeLoader
-- (NSNumber *)multiply:(double)a b:(double)b {
-    NSNumber *result = @(a * b);
+@interface RCT_EXTERN_MODULE(EdgeLoader, NSObject)
 
-    return result;
-}
+RCT_EXTERN_METHOD(getModelID:(RCTPromiseResolveBlock)resolve
+                 withRejecter:(RCTPromiseRejectBlock)reject)
 
-- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-    (const facebook::react::ObjCTurboModule::InitParams &)params
++ (BOOL)requiresMainQueueSetup
 {
-    return std::make_shared<facebook::react::NativeEdgeLoaderSpecJSI>(params);
-}
-
-+ (NSString *)moduleName
-{
-  return @"EdgeLoader";
+  return NO;
 }
 
 @end

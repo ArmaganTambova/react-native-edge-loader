@@ -1,5 +1,4 @@
-#import <EdgeLoaderSpec/EdgeLoaderSpec.h>
+#import <React/RCTBridgeModule.h>
 
-@interface EdgeLoader : NSObject <NativeEdgeLoaderSpec>
-
+@interface EdgeLoader : NSObject <RCTBridgeModule>
 @end
