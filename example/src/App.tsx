@@ -5,7 +5,6 @@ import {
   Text,
   Platform,
   TouchableOpacity,
-  SafeAreaView,
   Switch,
 } from 'react-native';
 import { getCutouts, EdgeLoaderView, type Cutout } from 'react-native-edge-loader';
@@ -40,7 +39,7 @@ export default function App() {
   const colors = ['#00FFFF', '#FF00FF', '#FFD700', '#00FF88', '#FF6B35'];
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <View style={styles.safe}>
       {/* The beam animates around the cutout, floating above everything */}
       <EdgeLoaderView
         isLoading={isLoading}
@@ -108,7 +107,7 @@ export default function App() {
           {result?.type ?? 'bilinmiyor'}
         </Text>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 

@@ -1,4 +1,10 @@
-import { NativeModules, Platform, Dimensions, PixelRatio } from 'react-native';
+import {
+  NativeModules,
+  TurboModuleRegistry,
+  Platform,
+  Dimensions,
+  PixelRatio,
+} from 'react-native';
 
 const LINKING_ERROR =
   `The package 'react-native-edge-loader' doesn't seem to be linked. Make sure: \n\n` +
@@ -6,16 +12,19 @@ const LINKING_ERROR =
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo Go\n';
 
-const EdgeLoader = NativeModules.EdgeLoader
-  ? NativeModules.EdgeLoader
-  : new Proxy(
-      {},
-      {
-        get() {
-          throw new Error(LINKING_ERROR);
-        },
-      }
-    );
+// TurboModuleRegistry is the correct lookup path for the New Architecture
+// (Bridgeless mode). NativeModules is kept as a fallback for old-arch builds.
+const EdgeLoader =
+  TurboModuleRegistry.get<any>('EdgeLoader') ??
+  NativeModules.EdgeLoader ??
+  new Proxy(
+    {},
+    {
+      get() {
+        throw new Error(LINKING_ERROR);
+      },
+    }
+  );
 
 interface IPhoneEntry {
   type: 'island' | 'notch' | 'punch_hole';
