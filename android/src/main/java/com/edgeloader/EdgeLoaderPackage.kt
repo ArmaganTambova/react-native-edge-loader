@@ -20,7 +20,7 @@ class EdgeLoaderPackage : BaseReactPackage() {
     mapOf(
       EdgeLoaderModule.NAME to ReactModuleInfo(
         name = EdgeLoaderModule.NAME,
-        className = EdgeLoaderModule.NAME,
+        className = EdgeLoaderModule::class.java.name,
         canOverrideExistingModule = false,
         needsEagerInit = false,
         isCxxModule = false,

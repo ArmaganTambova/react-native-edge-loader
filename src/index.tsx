@@ -12,19 +12,17 @@ const LINKING_ERROR =
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo Go\n';
 
-// TurboModuleRegistry is the correct lookup path for the New Architecture
-// (Bridgeless mode). NativeModules is kept as a fallback for old-arch builds.
-const EdgeLoader =
-  TurboModuleRegistry.get<any>('EdgeLoader') ??
-  NativeModules.EdgeLoader ??
-  new Proxy(
-    {},
-    {
-      get() {
-        throw new Error(LINKING_ERROR);
-      },
-    }
-  );
+// Lazy getter: TurboModuleRegistry is evaluated at call time, not at import time.
+// In New Architecture (Bridgeless/Fabric) the module may not be registered yet
+// when the JS bundle first evaluates, so we resolve it on each use.
+function getEdgeLoader(): any {
+  const m =
+    TurboModuleRegistry.get<any>('EdgeLoader') ?? NativeModules.EdgeLoader;
+  if (!m) {
+    throw new Error(LINKING_ERROR);
+  }
+  return m;
+}
 
 interface IPhoneEntry {
   type: 'island' | 'notch' | 'punch_hole';
@@ -66,24 +64,35 @@ const IPHONE_DB: Record<string, IPhoneEntry> = {
 };
 
 export interface Cutout {
-  type: 'island' | 'notch' | 'punch_hole' | 'none';
+  type: 'island' | 'notch' | 'punch_hole' | 'teardrop' | 'none';
   x?: number;
   y?: number;
   width?: number;
   height?: number;
   radius?: number;
-  path?: string;
 }
 
 export async function getCutouts(): Promise<Cutout> {
   if (Platform.OS === 'android') {
     try {
-      const cutouts = await EdgeLoader.getCutouts();
+      const cutouts = await getEdgeLoader().getCutouts();
       if (cutouts && cutouts.length > 0) {
         const c = cutouts[0];
         const ratio = PixelRatio.get();
+        const validTypes = [
+          'punch_hole',
+          'teardrop',
+          'notch',
+          'island',
+          'none',
+        ] as const;
+        const detectedType = validTypes.includes(
+          c.type as (typeof validTypes)[number]
+        )
+          ? (c.type as Cutout['type'])
+          : 'punch_hole';
         return {
-          type: 'punch_hole',
+          type: detectedType,
           x: c.x / ratio,
           y: c.y / ratio,
           width: c.width / ratio,
@@ -91,14 +100,14 @@ export async function getCutouts(): Promise<Cutout> {
         };
       }
     } catch (e) {
-      console.error(e);
+      console.warn('[EdgeLoader]', e);
     }
     return { type: 'none' };
   }
 
   if (Platform.OS === 'ios') {
     try {
-      const modelId = await EdgeLoader.getModelID();
+      const modelId = await getEdgeLoader().getModelID();
       const info = IPHONE_DB[modelId];
 
       if (info) {
@@ -113,7 +122,7 @@ export async function getCutouts(): Promise<Cutout> {
         };
       }
     } catch (e) {
-      console.error(e);
+      console.warn('[EdgeLoader]', e);
     }
   }
 

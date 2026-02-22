@@ -9,6 +9,7 @@ export interface Spec extends TurboModule {
       readonly width: number;
       readonly height: number;
       readonly gravity: string;
+      readonly type: string;
     }>
   >;
   getModelID(): Promise<string>;
