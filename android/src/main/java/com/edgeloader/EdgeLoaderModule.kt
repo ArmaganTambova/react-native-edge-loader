@@ -66,14 +66,17 @@ class EdgeLoaderModule(reactContext: ReactApplicationContext) :
           val density = reactApplicationContext.resources.displayMetrics.density
           val wDip = rect.width() / density
           val hDip = rect.height() / density
-          val aspectRatio = if (hDip > 0f) wDip / hDip else 1f
-          val cutoutType = when {
-            // Notch: çok geniş ve ince (en/boy oranı > 2.5)
-            aspectRatio > 2.5f -> "notch"
-            // Punch hole / teardrop: küçük alan (DIP < 80 her iki boyut)
-            wDip < 80f && hDip < 80f -> "punch_hole"
-            // Teardrop: orta büyüklükte, kare benzeri
-            else -> "teardrop"
+
+          // Eğer rect.top == 0 ise bu bir çentiktir (bezele yapışık).
+          // Değilse ekranda yüzen bir ada veya deliktir.
+          val isTouchingTop = rect.top == 0
+
+          val cutoutType = if (isTouchingTop) {
+            "notch"
+          } else {
+            // Yüzen tipler: Genişse island, karemsi/küçükse punch_hole
+            // Genişlik yüksekliğin 2 katından fazlaysa island diyelim (örn. Dynamic Island)
+            if (wDip > hDip * 2.0f) "island" else "punch_hole"
           }
           map.putString("type", cutoutType)
 
