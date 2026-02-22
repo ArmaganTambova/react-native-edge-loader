@@ -10,9 +10,10 @@
     "build:ios": "react-native build-ios --mode Debug"
   },
   "dependencies": {
+    "@shopify/react-native-skia": "^2.4.21",
     "react": "19.2.0",
     "react-native": "0.83.0",
-    "react-native-svg": "^15.0.0"
+    "react-native-reanimated": "^4.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
