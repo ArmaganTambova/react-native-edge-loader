@@ -7,7 +7,11 @@ import {
   TouchableOpacity,
   Switch,
 } from 'react-native';
-import { getCutouts, EdgeLoaderView, type Cutout } from 'react-native-edge-loader';
+import {
+  getCutouts,
+  EdgeLoaderView,
+  type Cutout,
+} from 'react-native-edge-loader';
 
 export default function App() {
   const [result, setResult] = useState<Cutout | null>(null);
